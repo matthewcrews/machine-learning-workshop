@@ -187,9 +187,11 @@ let map2PointsExample (P1: int[]) (P2: int[]) =
 
 // Having a function like
 let euclidianDistance (p1: int[]) (p2: int[]) =
-    Array.map2 (fun x y -> float ((x - y) * (x - y))) p1 p2
+    (p1, p2) 
+    ||> Array.map2 (fun x y -> float ((x - y) * (x - y)))
     |> Array.sum
-    |> (fun x -> sqrt x)
+    |> float
+    |> sqrt
 
 euclidianDistance [|1; 0; 0|] [|1; 1; 3|]
 
@@ -243,10 +245,17 @@ let functionWithClosure (x: int) =
 
 type DistanceMeasure = int [] -> int [] -> float
 
-let classify (matchSet: Example []) (d: DistanceMeasure) (unknown:int[]) =
+let classify (matchSet: Example []) (d: DistanceMeasure) (k:int) (unknown:int[]) =
+    // matchSet
+    // |> Array.minBy (fun x -> d unknown x.Pixels)
+    // |> (fun x -> x.Label)
     matchSet
-    |> Array.minBy (fun x -> d unknown x.Pixels)
-    |> (fun x -> x.Label)
+    |> Array.sortBy (fun x -> d unknown x.Pixels)
+    |> Array.take k
+    |> Array.countBy (fun x -> x.Label)
+    |> Array.maxBy (fun (k, c) -> c)
+    |> (fun (k, c) -> k)
+    
  
 // [ YOUR CODE GOES HERE! ]
 
@@ -255,7 +264,7 @@ module Example =
         Array.map int s
 
     let splitColumns (s:string) =
-        s.Split(',')
+        s.Split ','
 
     let create label pixels =
         {
@@ -271,6 +280,7 @@ module Example =
         let textData = File.ReadAllLines pathToFile
         textData.[1..]
         |> Array.map transform
+
 
 type Result = {
     Label: int
@@ -303,14 +313,24 @@ module Result =
  
 // [ YOUR CODE GOES HERE! ]
 
-let inputFile = Path.Combine(dataPath, "trainingsample.csv")
-let inputExamples = Example.fromFile inputFile
-let euclClassifier = classify inputExamples euclidianDistance 
-let manhattanClassifier = classify inputExamples manhattanDistance
+let rescale (oldMax:int) (newMax:int) (x:int) =
+    int (((float x) / (float oldMax)) * (float newMax))
+let oldMax = 255
+let newMax = 16
+
+let trainingFile = Path.Combine(dataPath, "trainingsample.csv")
+let trainingExamples = 
+    Example.fromFile trainingFile
+    |> Array.map (fun x -> Example.create x.Label (Array.map (rescale oldMax newMax) x.Pixels))
 
 let testFile = Path.Combine(dataPath, "validationsample.csv")
-let validationData = Example.fromFile testFile
+let validationData = 
+    Example.fromFile testFile
+    |> Array.map (fun x -> Example.create x.Label (Array.map (rescale oldMax newMax) x.Pixels))
 
+
+let euclClassifier = classify trainingExamples euclidianDistance 1
+let manhattanClassifier = classify trainingExamples manhattanDistance 1
 
 let euclValidation = 
     validationData
