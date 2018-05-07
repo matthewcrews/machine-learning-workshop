@@ -34,10 +34,10 @@ let sampleFile = cleanDir + "English.txt"
 // from the feature file and *all text* from the sampleFile. 
 
 // Use "File.ReadAllLines" to get the features
-let features = __
+let features = File.ReadAllLines "features.txt"
 
 // Use "File.ReadAllText" to get all the sample text
-let sampleText = __
+let sampleText = File.ReadAllText sampleFile
 
 
 // ----------------------------------------------------------------------------
@@ -77,7 +77,9 @@ let counts =
   //  - Use 'Seq.pairwise' to turn it into pairs of letters
   //  - Use 'Seq.map' to turn the letter pairs into strings
   //  - Use 'Seq.countBy' to count how many times each pair appears
-  []
+  sampleText
+  |> Seq.pairwise
+  |> Seq.countBy (fun (x, y) -> string x + string y)
 
 
 // ----------------------------------------------------------------------------
@@ -129,7 +131,18 @@ let total = float (String.length sampleText - 1)
 // Create a lookup table from 'counts' (call it 'countLookup'). Then
 // calculate probability for all features using "features |> Array.map" and
 // returning 1e-10 if the feature is not found or "count / total" otherwise
-let probabilities = []
+
+let countLookup =
+    counts
+    |> Map.ofSeq
+
+let probabilities =
+    features
+    |> Array.map (fun f ->
+        if countLookup.ContainsKey f then
+            (float countLookup.[f]) / total
+        else
+            1e-10)
 
 
 // ----------------------------------------------------------------------------
@@ -148,10 +161,21 @@ Chart.Column(Seq.zip features probabilities)
 // Also, change it so that it processes the 'text' given as a parameter
 
 let getFeatureVector text = 
-  let counts = __
-  let total = __
-  let countLookup = __
-  features |> Array.map (fun feature -> __)
+  let counts =   
+    text
+    |> Seq.pairwise
+    |> Seq.countBy (fun (x, y) -> string x + string y)
+  let total = float (String.length text - 1)
+  let countLookup = 
+    counts
+    |> Map.ofSeq
+  features 
+  |> Array.map (fun feature ->
+        if countLookup.ContainsKey feature then
+            (float countLookup.[feature]) / total
+        else
+            1e-10
+        )
 
 
 // Now, let's run your 'getFeatureVector' function on all languages in the
@@ -164,7 +188,7 @@ let getFeatureVector text =
 
 let languageFeatures = 
   Directory.GetFiles(cleanDir, "*.txt")
-  |> Array.map (fun file ->
+  |> Array.Parallel.map (fun file ->
       Path.GetFileNameWithoutExtension(file),
       getFeatureVector (File.ReadAllText(file)) )
 
@@ -205,7 +229,8 @@ distance (byLanguage.["English"]) (byLanguage.["Czech"])
 
 
 let classifyLanguage text =
-    __
+    let featureVec = getFeatureVector text
+    classify languageFeatures featureVec
 
 
 // Some examples    
