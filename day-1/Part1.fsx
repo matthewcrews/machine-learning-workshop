@@ -34,6 +34,7 @@
 // (or use the Alt+Enter keyboard shortcut)
 
 // [ YOUR CODE GOES HERE! ]
+let x = 42
 
 // let "binds" the value on the right to a name.
 
@@ -49,6 +50,7 @@ let greet name =
 // You should be able to run this in F# Interactive:
 // greet "World";;
 // </F# QUICK-STARTER> 
+greet "World"
 
 // Two data files are included in the same place you
 // found this script: 
@@ -67,6 +69,7 @@ let greet name =
   
 open System
 open System.IO
+open System.Windows.Forms
 
 // the following might come in handy: 
 // File.ReadAllLines(path)
@@ -183,7 +186,16 @@ let map2PointsExample (P1: int[]) (P2: int[]) =
 
 
 // Having a function like
-let distance (p1: int[]) (p2: int[]) = 42
+let euclidianDistance (p1: int[]) (p2: int[]) =
+    Array.map2 (fun x y -> float ((x - y) * (x - y))) p1 p2
+    |> Array.sum
+    |> (fun x -> sqrt x)
+
+euclidianDistance [|1; 0; 0|] [|1; 1; 3|]
+
+let manhattanDistance (p1: int[]) (p2: int[]) =
+    Array.map2 (fun x y -> float (abs(x - y))) p1 p2
+    |> Array.sum
 // would come in very handy right now,
 // except that in this case, 
 // 42 is likely not the right answer
@@ -228,18 +240,53 @@ let functionWithClosure (x: int) =
  // The classifier function should probably
 // look like this - except that this one will
 // classify everything as a 0:
-let classify (unknown:int[]) =
-    // do something smart here
-    // like find the Example with
-    // the shortest distance to
-    // the unknown element...
-    // and use the training examples
-    // in a closure...
-    0 
+
+type DistanceMeasure = int [] -> int [] -> float
+
+let classify (matchSet: Example []) (d: DistanceMeasure) (unknown:int[]) =
+    matchSet
+    |> Array.minBy (fun x -> d unknown x.Pixels)
+    |> (fun x -> x.Label)
  
 // [ YOUR CODE GOES HERE! ]
- 
- 
+
+module Example =
+    let stringToInt (s:string []) =
+        Array.map int s
+
+    let splitColumns (s:string) =
+        s.Split(',')
+
+    let create label pixels =
+        {
+            Label = label
+            Pixels = pixels
+        }
+
+    let fromRow (r:int []) =
+        create r.[0] r.[1..]
+
+    let fromFile (pathToFile:string) =
+        let transform = splitColumns >> stringToInt >> fromRow
+        let textData = File.ReadAllLines pathToFile
+        textData.[1..]
+        |> Array.map transform
+
+type Result = {
+    Label: int
+    Classification: int
+}
+
+module Result =
+    let create l c = 
+        {
+            Label = l
+            Classification = c
+        }
+
+    let score r =
+        if r.Label = r.Classification then 1 else 0
+
 // 8. EVALUATING THE MODEL AGAINST VALIDATION DATA
  
 // Now that we have a classifier, we need to check
@@ -256,6 +303,35 @@ let classify (unknown:int[]) =
  
 // [ YOUR CODE GOES HERE! ]
 
+let inputFile = Path.Combine(dataPath, "trainingsample.csv")
+let inputExamples = Example.fromFile inputFile
+let euclClassifier = classify inputExamples euclidianDistance 
+let manhattanClassifier = classify inputExamples manhattanDistance
+
+let testFile = Path.Combine(dataPath, "validationsample.csv")
+let validationData = Example.fromFile testFile
+
+
+let euclValidation = 
+    validationData
+    |> Array.Parallel.map (fun e -> Result.create e.Label (euclClassifier e.Pixels))
+
+let euclScore = 
+    euclValidation
+    |> Array.sumBy Result.score
+    |> (fun x -> (float x) / (float euclValidation.Length))
+
+let manhattanValidation =
+    validationData
+    |> Array.Parallel.map (fun e -> Result.create e.Label (manhattanClassifier e.Pixels))
+
+let manhattanScore =
+    manhattanValidation
+    |> Array.sumBy Result.score
+    |> (fun x -> (float x) / (float manhattanValidation.Length))
+
+manhattanScore
+euclScore
 
 // 9. SHIP IT!
 
