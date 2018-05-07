@@ -1,0 +1,12 @@
+framework >= net45
+source https://nuget.org/api/v2
+
+nuget FsAlg
+nuget DiffSharp < 0.7.0
+nuget FSharp.Data
+nuget MathNet.Numerics
+nuget MathNet.Numerics.FSharp
+nuget XPlot.GoogleCharts
+nuget Suave < 2.0.0
+
+nuget FSharp.Core
