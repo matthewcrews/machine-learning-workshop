@@ -216,9 +216,9 @@ let byLanguage = dict languageFeatures
 open KNN.NearestNeighbor
 
 // Check how our distance function works for a few languages
-distance (byLanguage.["English"]) (byLanguage.["Spanish"])
-distance (byLanguage.["French"]) (byLanguage.["English"])
-distance (byLanguage.["English"]) (byLanguage.["Czech"])
+euclDistance (byLanguage.["English"]) (byLanguage.["Spanish"])
+euclDistance (byLanguage.["French"]) (byLanguage.["English"])
+euclDistance (byLanguage.["English"]) (byLanguage.["Czech"])
 
 
 // Given some text, we can now classify it by finding the language with the
@@ -230,7 +230,7 @@ distance (byLanguage.["English"]) (byLanguage.["Czech"])
 
 let classifyLanguage text =
     let featureVec = getFeatureVector text
-    classify languageFeatures featureVec
+    classify languageFeatures euclDistance featureVec
 
 
 // Some examples    
@@ -249,9 +249,32 @@ classifyLanguage "us stock markets follow global plunge as china concerns deepen
 //    Use 'languageFeatures' and 'distance' to find the closest language for each 
 //    language.
 
+let closestLangage (language: string) (featureVec: float[]) (distance)  =
+    languageFeatures
+    |> Array.filter (fun (l, _) -> l <> language)
+    |> Array.minBy (fun (_, f) -> distance featureVec f)
+    |> fun (l, _) -> l
 
+let closestLanguagePairs =
+    languageFeatures
+    |> Array.map (fun (language, featureVec) ->
+        language, (closestLangage language featureVec euclDistance )
+        )
+
+let negEuclDistance = (fun x y -> (euclDistance x y) |> ((*) -1.0))
+
+let farthestLanguagePairs =
+    languageFeatures
+    |> Array.map (fun (language, featureVec) ->
+        language, (closestLangage language featureVec negEuclDistance)
+        )
 
 // 2. Which languages are the closest in terms of their absolute distance?
+let absClosestLanguagePairs =
+    languageFeatures
+    |> Array.map (fun (language, featureVec) ->
+        language, (closestLangage language featureVec absDistance)
+        )
 
 
 
