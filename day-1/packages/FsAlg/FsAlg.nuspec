@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>FsAlg</id>
+        <version>0.5.13</version>
+        <title>FsAlg: Generic Linear Algebra Library</title>
+        <authors>Atılım Güneş Baydin,Barak A. Pearlmutter</authors>
+        <licenseUrl>https://github.com/gbaydin/FsAlg/blob/master/README.md</licenseUrl>
+        <projectUrl>http://gbaydin.github.io/FsAlg/</projectUrl>
+        <iconUrl>http://gbaydin.github.io/FsAlg/img/fsalg-logo.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>FsAlg is a linear algebra library that supports generic types. It is implemented in the F# language.
+
+The library provides generic Vector and Matrix types that support most of the commonly used linear algebra operations, including matrix–vector operations, matrix inverse, determinants, eigenvalues, LU and QR decompositions. Its intended use is to enable writing generic linear algebra code with custom numeric types. It can also be used as a lightweight library for prototyping and scripting with primitive floating point types.
+
+FsAlg is developed by Atılım Güneş Baydin and Barak A. Pearlmutter as part of their work at the Brain and Computation Lab, Hamilton Institute, National University of Ireland Maynooth.</description>
+        <summary>FsAlg: Generic Linear Algebra Library</summary>
+        <releaseNotes>Please visit 
+
+https://github.com/gbaydin/FsAlg/releases 
+
+for the latest release notes.</releaseNotes>
+        <copyright>Copyright 2015, National University of Ireland Maynooth (Atilim Gunes Baydin, Barak A. Pearlmutter)</copyright>
+        <tags>Linear Algebra Generic Vector Matrix</tags>
+    </metadata>
+</package>

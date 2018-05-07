@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Suave</id>
+    <version>1.1.3</version>
+    <title>Suave</title>
+    <authors>Ademar Gonzalez, Henrik Feldt</authors>
+    <owners>Ademar Gonzalez, Henrik Feldt</owners>
+    <licenseUrl>https://github.com/SuaveIO/Suave/blob/master/COPYING</licenseUrl>
+    <projectUrl>http://suave.io</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/SuaveIO/resources/master/images/head_trans.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Suave is a simple web development F# library providing a lightweight web server and a set of combinators to manipulate route flow and task composition.</description>
+    <releaseNotes>Release Notes:
+
+ * v1.1.3
+ * [websocket] support multiple readers and writes
+ * check AcceptSocket is not null
+ * Merge pull request #427 from jackmott/releases/v1.x
+ * fix comments
+ * Merge pull request #1 from SuaveIO/releases/v1.x
+ * Merge pull request #423 from jackmott/feature/dotliquidnamingconvention
+ * fixed function signatures
+ * Ability to set dotliquid naming convention directly
+ * v1.1.2
+ * [tests] improving combinator tests for headers
+ * [combinators] case-insensitive headers
+ * [combinators] adding setHeaderValue function
+ * v1.1.1
+ * [owin] fixes #385
+ * [owin] repro #385
+ * up minor version number
+ * [libuv] OperationPair needs to change to satisfy prev changes
+ * test for auto grow funcionality
+ * BufferManager autogrow
+ * ConcurrentPool does not underflow</releaseNotes>
+    <copyright>Ademar Gonzalez, Henrik Feldt</copyright>
+    <language>en-GB</language>
+    <dependencies>
+      <dependency id="FSharp.Core" version="3.1.2.5" />
+    </dependencies>
+  </metadata>
+</package>

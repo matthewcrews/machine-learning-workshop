@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>XPlot.GoogleCharts</id>
+    <version>1.4.5</version>
+    <title>XPlot.GoogleCharts</title>
+    <authors>Taha Hachana, Tomas Petricek</authors>
+    <owners>Taha Hachana</owners>
+    <licenseUrl>http://github.com/fslaborg/XPlot/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>http://github.com/fslaborg/XPlot</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/fslaborg/XPlot/master/docs/files/img/logo.png</iconUrl>
+    <description>XPlot is a cross-platform data visualization library that supports creating charts using Google Charts and Plotly. The library provides a composable domain specific language for building charts and specifying their properties.</description>
+    <summary>Data visualization library for F#</summary>
+    <releaseNotes>Fixing documentation template</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>F# fsharp data visualization html5 javascript datavis google chart plotly deedle frame dataframe</tags>
+    <dependencies>
+      <dependency id="Google.DataTable.Net.Wrapper" version="3.1.2" />
+      <dependency id="Newtonsoft.Json" version="10.0.3" />
+    </dependencies>
+  </metadata>
+</package>
